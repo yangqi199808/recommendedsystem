@@ -8,6 +8,8 @@ import com.yangqi.recommendedsystem.dal.ShopModelMapper;
 import com.yangqi.recommendedsystem.model.CategoryModel;
 import com.yangqi.recommendedsystem.model.SellerModel;
 import com.yangqi.recommendedsystem.model.ShopModel;
+import com.yangqi.recommendedsystem.recommended.RecommendService;
+import com.yangqi.recommendedsystem.recommended.RecommendSortService;
 import com.yangqi.recommendedsystem.service.CategoryService;
 import com.yangqi.recommendedsystem.service.SellerService;
 import com.yangqi.recommendedsystem.service.ShopService;
@@ -23,6 +25,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaoer
@@ -32,6 +35,12 @@ import java.util.*;
 public class ShopServiceImpl implements ShopService {
     @Autowired
     private ShopModelMapper shopModelMapper;
+
+    @Autowired
+    private RecommendService recommendService;
+
+    @Autowired
+    private RecommendSortService recommendSortService;
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
@@ -91,11 +100,22 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public List<ShopModel> recommend(BigDecimal longitude, BigDecimal latitude) {
-        List<ShopModel> shopModels = shopModelMapper.recommend(longitude, latitude);
-        shopModels.forEach(shopModel -> {
-            shopModel.setSellerModel(sellerService.get(shopModel.getSellerId()));
-            shopModel.setCategoryModel(categoryService.get(shopModel.getCategoryId()));
-        });
+        // List<ShopModel> shopModels = shopModelMapper.recommend(longitude, latitude);
+        // shopModels.forEach(shopModel -> {
+        //     shopModel.setSellerModel(sellerService.get(shopModel.getSellerId()));
+        //     shopModel.setCategoryModel(categoryService.get(shopModel.getCategoryId()));
+        // });
+        // return shopModels;
+
+        List<Integer> shopIdList = recommendService.recall(148);
+        // 排序
+        shopIdList = recommendSortService.sort(shopIdList, 148);
+        List<ShopModel>  shopModels = shopIdList.stream().map(id -> {
+            ShopModel shopModel = get(id);
+            shopModel.setIconUrl("/static/image/shopcover/xchg.jpg");
+            shopModel.setDistance(100);
+            return shopModel;
+        }).collect(Collectors.toList());
         return shopModels;
     }
 
