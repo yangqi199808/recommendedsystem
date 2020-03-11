@@ -49,3 +49,9 @@ CREATE TABLE `recommendedsystem`.`shop`  (
   `icon_url` varchar(100) NOT NULL DEFAULT '' COMMENT '门店图片',
   PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `recommendedsystem`.`recommend` (
+  `id` int(11) NOT NULL,
+  `recommend` varchar(1000) NOT NULL,
+  PRIMARY KEY (`id`)
+);
