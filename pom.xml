@@ -23,7 +23,7 @@
         <!-- 指定 maven 生成的 target 所使用的 jdk 版本 -->
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- 指定 elasticsearch 相关的 jar 版本 -->
-        <elasticsearch.version>7.3.0</elasticsearch.version>
+        <elasticsearch.version>7.11.2</elasticsearch.version>
     </properties>
 
     <dependencies>
